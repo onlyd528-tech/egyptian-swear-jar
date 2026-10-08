@@ -2,6 +2,22 @@ import discord
 from discord.ext import commands
 import json
 import os
+from threading import Thread
+from flask import Flask
+
+# إعدادات الـ Web Server البسيط عشان يفضل Koyeb صاحي ومشغل البوت أونلاين 24/7
+app = Flask('')
+
+@app.route('/')
+def home():
+    return "Bot is alive and running!"
+
+def run_web():
+    app.run(host='0.0.0.0', port=8080)
+
+def keep_alive():
+    t = Thread(target=run_web)
+    t.start()
 
 # إعدادات البوت والصلاحيات
 intents = discord.Intents.default()
@@ -137,6 +153,9 @@ async def jar(ctx):
         )
     
     await ctx.send(embed=embed)
+
+# تشغيل السيرفر الوهمي الأول في الخلفية
+keep_alive()
 
 # تشغيل البوت وسحب التوكن سراً من إعدادات الاستضافة
 bot.run(os.environ.get("BOT_TOKEN"))
